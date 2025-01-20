@@ -1,7 +1,7 @@
 import { signInWithPopup, signOut } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { auth } from "./firebase";
-import { Box,Button } from "@mui/material";
+import { Box,Button, Typography } from "@mui/material";
 import { UserContext } from "./App";
 import { useEffect, useState } from "react";
 import LoginIcon from '@mui/icons-material/Login';
@@ -11,6 +11,7 @@ function Login(){
     const [user,setUser] = useState(UserContext[0]);
     const [userData,setUserData] = useState(UserContext[1]);
     const [page,setPage] = useState(UserContext[2]);
+    const [isLogin,setIslogin] = useState(false);
 
     useEffect(()=>{
         const unsubscribe=auth.onAuthStateChanged((authUser)=>{
@@ -32,6 +33,7 @@ function Login(){
     const handleSignIn = async () =>{
         try {
             const result = await signInWithPopup(auth,provider);
+            setIslogin(true);
             console.log("ログイン完了:",result.user);
             console.log("user:",user);
             console.log("page:",page);
@@ -57,7 +59,9 @@ function Login(){
                 justifyContent:'inherit'
             }}
         >
-            {user ? <Button variant="contained" color="black" onClick={handleSignIn}><LoginIcon></LoginIcon>Googleでログイン</Button> : <Button onClick={handleSignOut}>ログアウト</Button>}
+            {!isLogin
+            ? <Button variant="contained" onClick={handleSignIn}><LoginIcon></LoginIcon><Typography fontSize={"h6.fontSize"}>Googleでログイン</Typography></Button> 
+            : <Button variant="contained" onClick={handleSignOut}><Typography fontSize={"h6.fontSize"}>ログアウト</Typography></Button>}
         </Box>
         </>
     )
