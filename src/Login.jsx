@@ -2,27 +2,24 @@ import { signInWithPopup, signOut } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { auth } from "./firebase";
 import { Box,Button, Typography } from "@mui/material";
-import { UserContext } from "./App";
-import { useEffect, useState } from "react";
+import { UserContext,PageContext } from "./App";
+import { useContext, useEffect, useState } from "react";
 import LoginIcon from '@mui/icons-material/Login';
 
 function Login(){
     const provider = new GoogleAuthProvider();
-    const [user,setUser] = useState(UserContext[0]);
-    const [userData,setUserData] = useState(UserContext[1]);
-    const [page,setPage] = useState(UserContext[2]);
+    const {user,setUser} = useContext(UserContext);
+    const {page,setPage} = useContext(PageContext);
     const [isLogin,setIslogin] = useState(false);
 
     useEffect(()=>{
         const unsubscribe=auth.onAuthStateChanged((authUser)=>{
             if(authUser){
+                // コンテクストの変更
                 setUser(authUser);
-                setPage("Match");
-                console.log('user set\n',user);
             }
             else {
                 setUser(null);
-                console.log('user unset');
             }
         });
         return ()=>{
@@ -34,9 +31,9 @@ function Login(){
         try {
             const result = await signInWithPopup(auth,provider);
             setIslogin(true);
-            console.log("ログイン完了:",result.user);
-            console.log("user:",user);
-            console.log("page:",page);
+            setPage("Matching");
+            console.log("ログイン完了:",user);
+            console.log("現在のページ:",page);
         } catch(error){
             console.log("エラーが発生:",error);
         }
@@ -46,6 +43,7 @@ function Login(){
         try {
             await signOut(auth);
             console.log("ログアウトしました");
+            setIslogin(false);
         } catch(error){
             console.log("エラー発生:",error);
         }
