@@ -1,9 +1,10 @@
 import { signInWithPopup, signOut } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { auth } from "./firebase";
-import { Button } from "@mui/material";
+import { Box,Button } from "@mui/material";
 import { UserContext } from "./App";
 import { useEffect, useState } from "react";
+import LoginIcon from '@mui/icons-material/Login';
 
 function Login(){
     const provider = new GoogleAuthProvider();
@@ -50,7 +51,14 @@ function Login(){
 
     return(
         <>
-        {user ? <Button color="black" onClick={handleSignIn}>Googleでログイン</Button> : <Button onClick={handleSignOut}>ログアウト</Button>}
+        <Box
+            sx={{
+                display:'flex',
+                justifyContent:'inherit'
+            }}
+        >
+            {user ? <Button variant="contained" color="black" onClick={handleSignIn}><LoginIcon></LoginIcon>Googleでログイン</Button> : <Button onClick={handleSignOut}>ログアウト</Button>}
+        </Box>
         </>
     )
 }
