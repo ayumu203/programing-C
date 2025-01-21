@@ -13,6 +13,14 @@ function Login(){
     const [isLogin,setIslogin] = useState(false);
 
     useEffect(()=>{
+        window.addEventListener('beforeunload',handleSignOut);
+
+        return () => {
+            window.removeEventListener('beforeunload',handleSignOut);
+        };
+    },[]);
+
+    useEffect(()=>{
         const unsubscribe=auth.onAuthStateChanged((authUser)=>{
             if(authUser){
                 // コンテクストの変更
@@ -43,6 +51,7 @@ function Login(){
         try {
             await signOut(auth);
             console.log("ログアウトしました");
+            setPage("Login");
             setIslogin(false);
         } catch(error){
             console.log("エラー発生:",error);
