@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { PageContext, UserContext } from "./App";
 import { Box, Button, Typography } from "@mui/material";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, getDocs,doc } from "firebase/firestore";
 import { db } from "./firebase";
 
 function Matching(){
@@ -12,6 +12,7 @@ function Matching(){
 
     const handleRoomMatching = async () => {
         setIsMatching(true);
+        await deleteRoom();
         const isJoined = await searchRoom();
         if(!isJoined)await makeRoom();
     }
@@ -72,6 +73,17 @@ function Matching(){
         } catch(e){
             console.log("error:",e);
         }
+    }
+
+    const deleteRoom = async () =>{
+        console.log("roomの削除を開始");
+        const querySnapshot = await getDocs(collection(db, "rooms"));
+        querySnapshot.forEach(async (docs) => {
+            console.log(docs.data().RoomId,"vs",user.uid);
+            if(docs.data().RoomId === user.uid){
+                await deleteDoc(doc(db, "rooms",docs.id));
+            }
+        })
     }
 
 
