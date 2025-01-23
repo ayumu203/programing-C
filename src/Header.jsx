@@ -1,21 +1,37 @@
-import { Box, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import Login from './Login';
+import { GraphicEq } from '@mui/icons-material';
+import './index.css';
+
 export const Header = () =>{
     return(<>
-        <Box
+        <Grid container
            sx={{
-              display:'flex',
-              justifyContent: 'space-between',
-              borderBottom:3,
-              borderColor:'gray',
+              height: '140px',
+              alignItems: 'center',
+              borderBottom:'3px solid gray',
+              paddingTop: "10px",
               paddingBottom:"10px"
             }}>
-            <Typography
-              fontSize={'h3.fontSize'}
-            >
-              Regelook
-            </Typography>
-            <Login></Login>
-        </Box>
+            <Grid xs={3}>
+
+            </Grid>
+
+            <Grid xs={6}>
+              <Typography
+                sx={{
+                  fontFamily: '"Anton", sans-serif',
+                  fontSize: '80px',
+                  textAlign: 'center',
+                  height: 'auto',
+                }}>
+                Regelook
+              </Typography>
+            </Grid>
+
+            <Grid xs={3}>
+              <Login></Login>
+            </Grid>
+        </Grid>
     </>)
 }

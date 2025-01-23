@@ -42,6 +42,7 @@ function Login(){
             setPage("Matching");
             console.log("ログイン完了:",user);
             console.log("現在のページ:",page);
+            setIsSecondButtonVisible(false);
         } catch(error){
             console.log("エラーが発生:",error);
         }
@@ -58,28 +59,55 @@ function Login(){
         }
     }
 
+  // 2つ目のボタンの表示状態を管理するためのuseStateフック
+  const [isSecondButtonVisible, setIsSecondButtonVisible] = useState(false);
+
+  // 2つ目のボタンの表示/非表示を切り替える関数
+  const handleClick = () => {
+    setIsSecondButtonVisible(true);  // 2つ目のボタンを表示
+  };
+
     return(
         <>
         <Box
             sx={{
                 display:'flex',
-                justifyContent:'inherit'
+                justifyContent:'inherit',
+                alignItems: 'flex-end',
             }}
         >
             {
             !isLogin
             ? 
-            <Button variant="contained" onClick={handleSignIn}>
-                <LoginIcon></LoginIcon>
-                <Typography fontSize={"h6.fontSize"}>Googleでログイン</Typography>
-            </Button> 
+                <Button variant="contained" onClick={handleSignIn}>
+                    <LoginIcon></LoginIcon>
+                    <Typography fontSize={"h6.fontSize"}>ログイン</Typography>
+                </Button> 
             : 
-            <>
-                <Button variant="contained" onClick={handleSignOut}>
-                    <Typography fontSize={"h6.fontSize"}>ログアウト</Typography>
+                <>
+                <Button onClick={handleClick}
+                    sx={{
+                        minWidth: 'auto',
+                        padding: 0,
+                        borderRadius: '50%',
+                        textAlign: 'center'
+                    }}
+                >
+                    <img src={user.photoURL} style={{borderRadius: '50%'}}></img>
                 </Button>
-                <img src={user.photoURL} style={{borderRadius: '50%'}}></img>
-            </>
+                
+                {isSecondButtonVisible && (               
+                    <Button variant="contained" onClick={handleSignOut} 
+                        sx={{
+                            height: '40px',
+                            width: '140px',
+                            marginLeft: 2,
+                        }}>
+                        <Typography fontSize={"h6.fontSize"}>ログアウト</Typography>
+                    </Button>
+                )}
+                
+                </>
             }
         </Box>
         </>
