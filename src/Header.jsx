@@ -12,7 +12,9 @@ export const Header = () =>{
             }}>
             <Typography
               fontSize={'h3.fontSize'}
-            >Regelook</Typography>
+            >
+              Regelook
+            </Typography>
             <Login></Login>
         </Box>
     </>)
