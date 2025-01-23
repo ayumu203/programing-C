@@ -68,7 +68,7 @@ function Login(){
         >
             {!isLogin
             ? <Button variant="contained" onClick={handleSignIn}><LoginIcon></LoginIcon><Typography fontSize={"h6.fontSize"}>Googleでログイン</Typography></Button> 
-            : <Button variant="contained" onClick={handleSignOut}><Typography fontSize={"h6.fontSize"}>ログアウト</Typography></Button>}
+            : <><Button variant="contained" onClick={handleSignOut}><Typography fontSize={"h6.fontSize"}>ログアウト</Typography></Button><img src={user.photoURL} style={{borderRadius: '50%'}}></img></>}
         </Box>
         </>
     )
