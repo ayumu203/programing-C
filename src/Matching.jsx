@@ -1,20 +1,35 @@
-import { useContext,  } from "react";
-import { PageContext, UserContext } from "./App";
+import { useContext, useEffect,  } from "react";
+import { PageContext, RoomContext, UserContext } from "./App";
 import { Button, Typography } from "@mui/material";
-import { collection, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
+import { collection, getDocs,doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
 import { rewriteFirestoreData } from "./ResetDatabase";
 
-function Matching(){
-    const {user} = useContext(UserContext);
 
+function Matching(){
+    const {user,setUser} = useContext(UserContext);
+    const {roomNumber,setRoomNumber,} = useContext(RoomContext);
+
+
+    const handleBeforeUnload = async () => {
+        rewriteFirestoreData();
+        await leaveRoom();
+      }
+      
+      useEffect(() => {
+        window.addEventListener('beforeunload', handleBeforeUnload)
+    
+        return () => {
+          window.removeEventListener('beforeunload', handleBeforeUnload)
+        }
+      }, [handleBeforeUnload])
 
     const handleRoomMatching = async () => {
         storeUserData();
         const joinableRoom = await searchRoom();
         joinRoom(joinableRoom);
-        rewriteFirestoreData();
+        // rewriteFirestoreData();
     }
     
     const storeUserData = async () =>{
@@ -23,7 +38,7 @@ function Matching(){
             "PhotoURL" : user.photoURL 
         })
     }
-
+    
     // 参加可能なルームの番号を返す
     const searchRoom = async () => {
         console.log("空いているルームを検索");
@@ -52,7 +67,8 @@ function Matching(){
         });  
         return joinableRoom;
     }
-
+    
+    
     const joinRoom = (joinableRoom) =>{
         for(let i = 0; i < joinableRoom.length; i++){
             const roomRef = doc(db, 'MatchingRoom', `Room${joinableRoom[i][1]}`);
@@ -60,20 +76,38 @@ function Matching(){
                 case "Host":
                     updateDoc(roomRef, { "HostUserId" : user.uid });
                     updateDoc(roomRef, { "HeadCount" : 1 });
+                    setRoomNumber(joinableRoom[i][1]);
                     return ;
                 case "Sub1":
                     updateDoc(roomRef, { "SubUser1Id" : user.uid });
                     updateDoc(roomRef, { "HeadCount" : 2 });
+                    setRoomNumber(joinableRoom[i][1]);
                     return ;
                 case "Sub2":
                     updateDoc(roomRef, { "SubUser2Id" : user.uid });
+                    setRoomNumber(joinableRoom[i][1]);
                     return;
             }
         }
     }
 
+    const leaveRoom = async () =>{
+        const roomRef = doc(db, 'MatchingRoom', `Room${roomNumber}`);
+        const docSnap = await getDoc(roomRef);
+        console.log(100);
 
-    // 実装ヨロヨロ、、、
+        if(docSnap.exists()){
+            switch(user.uid){
+                case docSnap.data().HostUserId:
+                    updateDoc(roomRef, { "HostUserId" : "" });
+                    updateDoc(roomRef, { "HeadCount" :  docSnap.data().HeadCount -1});
+                }
+            }
+            
+    }
+
+
+            
     // コメントアウトしてあるコードはもう消したHooksを使ってるので参考程度に、三項演算子使うと便利ってな、がはは
     return (
     <>
@@ -123,15 +157,16 @@ function Matching(){
         //             <Button
         //                 variant="contained"
         //                 sx={{
-        //                     color:"white",
-        //                 }}
-        //                 onClick={()=>handleRoomMatching()}
-        //             >
-        //                 マッチング開始
-        //             </Button>
-        //     }
-        // </Box>
-    )
-};
+            //                     color:"white",
+            //                 }}
+            //                 onClick={()=>handleRoomMatching()}
+            //             >
+            //                 マッチング開始
+            //             </Button>
+            //     }
+            // </Box>
+        )
+    };
 
+    
 export default Matching;
