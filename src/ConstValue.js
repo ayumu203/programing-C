@@ -1,0 +1,1 @@
+export const MAX_ROOM_HEADCOUNT = 3;
