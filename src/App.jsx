@@ -2,6 +2,7 @@ import { createContext, useState } from 'react';
 import './App.css'
 import { Header } from './Header';
 import Matching from './Matching';
+import { Game } from './Game';
 
 export const UserContext = createContext(null);
 export const PageContext = createContext(null);
@@ -17,6 +18,7 @@ function App() {
             <Header></Header>
           </header>
           <Matching></Matching>
+          <Game></Game>
         </PageContext.Provider>
       </UserContext.Provider>
     </>)
