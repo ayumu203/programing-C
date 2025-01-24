@@ -8,7 +8,7 @@ import { rewriteFirestoreData } from "./ResetDatabase";
 
 function Matching(){
     const {user} = useContext(UserContext);
-    const {page,setPage} = useContext(PageContext);
+
 
     const handleRoomMatching = async () => {
         storeUserData();
@@ -59,9 +59,11 @@ function Matching(){
             switch(joinableRoom[i][0]){
                 case "Host":
                     updateDoc(roomRef, { "HostUserId" : user.uid });
+                    updateDoc(roomRef, { "HeadCount" : 1 });
                     return ;
                 case "Sub1":
                     updateDoc(roomRef, { "SubUser1Id" : user.uid });
+                    updateDoc(roomRef, { "HeadCount" : 2 });
                     return ;
                 case "Sub2":
                     updateDoc(roomRef, { "SubUser2Id" : user.uid });
