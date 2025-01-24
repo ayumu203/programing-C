@@ -1,5 +1,7 @@
 export const Game = () =>{
-    return (<>
-        
-    </>)
+    return (
+        <>
+            
+        </>
+    )
 }

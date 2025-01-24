@@ -1,26 +1,20 @@
-import { useContext, useState } from "react";
+import { useContext,  } from "react";
 import { PageContext, UserContext } from "./App";
-import { Box, Button, Typography } from "@mui/material";
-import { collection, deleteDoc, getDocs,doc, updateDoc, onSnapshot, setDoc } from "firebase/firestore";
+import { Button, Typography } from "@mui/material";
+import { collection, deleteDoc, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
+import { rewriteFirestoreData } from "./ResetDatabase";
 
 function Matching(){
     const {user} = useContext(UserContext);
     const {page,setPage} = useContext(PageContext);
-    const [isMatching,setIsMatching] = useState(false);
-    const [isMatched,setIsMatched] = useState(false);
-
-    window.addEventListener("onunload",async () =>{
-        setIsMatching(false);
-        setIsMatched(false);
-    });
 
     const handleRoomMatching = async () => {
         storeUserData();
         const joinableRoom = await searchRoom();
         joinRoom(joinableRoom);
-        // rewriteFirestoreData();
+        rewriteFirestoreData();
     }
     
     const storeUserData = async () =>{
@@ -76,20 +70,9 @@ function Matching(){
         }
     }
 
-    // 複数個のドキュメントを一括で変更したい場合に使用する:やらかしたときのリカバー
-    const rewriteFirestoreData = () =>{
-        for(let i=1; i<= 5; i++){
-            const roomRef = doc(db, 'MatchingRoom', `Room${i}`);
-            setDoc(roomRef, {
-                "RoomNumber":i,
-                "HeadCount":0,
-                "HostUserId":"",
-                "SubUser1Id":"",
-                "SubUser2Id":""
-            });
-        }
-    }
 
+    // 実装ヨロヨロ、、、
+    // コメントアウトしてあるコードはもう消したHooksを使ってるので参考程度に、三項演算子使うと便利ってな、がはは
     return (
     <>
         {user ? <Typography><Button onClick={handleRoomMatching}>マッチング開始</Button></Typography> : <Typography>まずは右上のボタンよりログインしてください</Typography>}
