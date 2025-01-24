@@ -101,9 +101,16 @@ function Matching(){
                 case docSnap.data().HostUserId:
                     updateDoc(roomRef, { "HostUserId" : "" });
                     updateDoc(roomRef, { "HeadCount" :  docSnap.data().HeadCount -1});
-                }
+                    break;
+                case docSnap.data().SubUser1Id:
+                    updateDoc(roomRef, { "SubUser1Id" : "" });
+                    updateDoc(roomRef, { "HeadCount" :  docSnap.data().HeadCount -1});
+                    break;
+                case docSnap.data().SubUser2Id:
+                    updateDoc(roomRef, { "SubUser2Id" : "" });
+                    updateDoc(roomRef, { "HeadCount" :  docSnap.data().HeadCount -1});
             }
-            
+        }
     }
 
 
