@@ -1,4 +1,5 @@
-import { setDoc,doc,db } from "firebase/firestore";
+import { setDoc,doc } from "firebase/firestore";
+import { db } from "./firebase";
 // 複数個のドキュメントを一括で変更したい場合に使用する:やらかしたときのリカバー
 export const rewriteFirestoreData = () =>{
     // MatchingRoomテーブルを初期化

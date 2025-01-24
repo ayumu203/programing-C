@@ -1,7 +1,7 @@
 import { useContext,  } from "react";
 import { PageContext, UserContext } from "./App";
 import { Button, Typography } from "@mui/material";
-import { collection, deleteDoc, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
+import { collection, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
 import { rewriteFirestoreData } from "./ResetDatabase";
