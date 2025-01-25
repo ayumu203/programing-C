@@ -1,37 +1,22 @@
-import { useContext, useEffect,  } from "react";
-import { PageContext, RoomContext, UserContext } from "./App";
+import { useContext } from "react";
+import { RoomContext, UserContext } from "./App";
 import { Button, Typography } from "@mui/material";
-import { collection, getDocs,doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
+import { collection, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
 import { rewriteFirestoreData } from "./ResetDatabase";
 
 
 function Matching(){
-    const {user,setUser} = useContext(UserContext);
-    const {roomNumber,setRoomNumber,} = useContext(RoomContext);
-
-
-    const handleBeforeUnload = async () => {
-        rewriteFirestoreData();
-        await leaveRoom();
-      }
-      
-      useEffect(() => {
-        window.addEventListener('beforeunload', handleBeforeUnload)
+    const { user } = useContext(UserContext);
+    const { roomNumber,setRoomNumber } = useContext(RoomContext);
     
-        return () => {
-          window.removeEventListener('beforeunload', handleBeforeUnload)
-        }
-      }, [handleBeforeUnload])
-
     const handleRoomMatching = async () => {
         storeUserData();
         const joinableRoom = await searchRoom();
         joinRoom(joinableRoom);
-        // rewriteFirestoreData();
     }
-    
+
     const storeUserData = async () =>{
         await setDoc(doc(db,"User",user.uid),{
             "UserName" : user.displayName,
@@ -69,7 +54,7 @@ function Matching(){
     }
     
     
-    const joinRoom = (joinableRoom) =>{
+    const joinRoom = async (joinableRoom) =>{
         for(let i = 0; i < joinableRoom.length; i++){
             const roomRef = doc(db, 'MatchingRoom', `Room${joinableRoom[i][1]}`);
             switch(joinableRoom[i][0]){
@@ -85,36 +70,13 @@ function Matching(){
                     return ;
                 case "Sub2":
                     updateDoc(roomRef, { "SubUser2Id" : user.uid });
+                    updateDoc(roomRef, { "HeadCount" : 3 });
                     setRoomNumber(joinableRoom[i][1]);
                     return;
             }
         }
     }
-
-    const leaveRoom = async () =>{
-        const roomRef = doc(db, 'MatchingRoom', `Room${roomNumber}`);
-        const docSnap = await getDoc(roomRef);
-        console.log(100);
-
-        if(docSnap.exists()){
-            switch(user.uid){
-                case docSnap.data().HostUserId:
-                    updateDoc(roomRef, { "HostUserId" : "" });
-                    updateDoc(roomRef, { "HeadCount" :  docSnap.data().HeadCount -1});
-                    break;
-                case docSnap.data().SubUser1Id:
-                    updateDoc(roomRef, { "SubUser1Id" : "" });
-                    updateDoc(roomRef, { "HeadCount" :  docSnap.data().HeadCount -1});
-                    break;
-                case docSnap.data().SubUser2Id:
-                    updateDoc(roomRef, { "SubUser2Id" : "" });
-                    updateDoc(roomRef, { "HeadCount" :  docSnap.data().HeadCount -1});
-            }
-        }
-    }
-
-
-            
+    
     // コメントアウトしてあるコードはもう消したHooksを使ってるので参考程度に、三項演算子使うと便利ってな、がはは
     return (
     <>

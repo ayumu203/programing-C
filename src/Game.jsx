@@ -1,27 +1,64 @@
-import { useContext } from "react"
-import { UserContext } from "./App"
+import { useContext, useState } from "react"
+import { PageContext, RoomContext, UserContext } from "./App"
 import { Box, Typography } from "@mui/material";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
+import { PlayerInfoPanel } from "./GameComponents/PlayerInfoPanel";
+import { CompetitorInfoPanel } from "./GameComponents/CompetitorInfoPanel";
 
 export const Game = () =>{
     const {user} = useContext(UserContext);
+    const {roomNumber} = useContext(RoomContext);
+    const [ opponent1,setOpponent1 ] = useState(null);
+    const [ opponent2,setOpponent2 ] = useState(null);
 
-    const opponentUser1 = onSnapshot(doc(db,"MatchingRoom","HostUserId"),(doc) =>{
-        console.log(doc.data);
-    })
-    // 人数が揃ったらゲームを開始する.
-    // ターンごとに全員が回答を待機,そろったら表示
-    return (
+    const userRef = doc(db,"MatchingRoom",`Room${roomNumber}`);
+    const userDataObserver = onSnapshot(userRef,async (document) =>{
+        if(user && document.exists()){
+            if(user.uid !== document.data().HostUserId){
+                const oppRef = doc(db,"User",`${document.data().HostUserId}`);
+                const opp = await  getDoc(oppRef);
+                if(opp.exists()){
+                    if(opponent1 === null)setOpponent1(opp.data());
+                }
+            }
+            if(user.uid !== document.data().SubUser1Id){
+                const oppRef = doc(db,"User",`${document.data().SubUser1Id}`);
+                const opp = await getDoc(oppRef);
+                if(opp.exists()){
+                    if(opponent1 === null){
+                        setOpponent1(opp.data());
+                    }
+                    if(opponent1.UserName !== opp.data().UserName && opponent2 === null){
+                        setOpponent2(opp.data());
+                    }
+                }
+            }
+            if(user.uid !== document.data().SubUser2Id){
+                const oppRef = doc(db,"User",`${document.data().SubUser2Id}`);
+                const opp = await getDoc(oppRef);
+                if(opp.exists()){
+                    if(opponent2 === null)setOpponent2(opp.data());
+                }    
+            }
+        }
+    })  
+
+    return(
         <Box>
-            {user ? 
             <Box>
-                <Typography>{user.displayName}</Typography>
-                <img src={`${user.photoURL}`}></img>
-            </Box> : 
+                プレイヤーの情報を表示するコンポーネント
+                <PlayerInfoPanel></PlayerInfoPanel>
+                {/* {!opponent1 ? <CompetitorInfoPanel></CompetitorInfoPanel> : <CompetitorInfoPanel opponent={opponent1}></CompetitorInfoPanel>} */}
+                <Typography>{!opponent1 ? <>マッチング中</> : <>{opponent1.UserName}</>}</Typography>
+                {!opponent1 ? <>no img</>: <img src={`${opponent1.PhotoURL}`}></img>}        
+                {/* 写真も同じように作ってクレメンス、、、 */}
+                <Typography>{!opponent2 ? <>マッチング中</> : <>{opponent2.UserName}</>}</Typography>
+                {/* 写真も同じように作ってクレメンス、、、 */}
+            </Box>
             <Box>
-                <Typography>まずは右上のボタンよりログインしてください</Typography>
-            </Box>}
+
+            </Box>
         </Box>
     )
 }

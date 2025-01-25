@@ -4,16 +4,16 @@ import { db } from "./firebase";
 export const rewriteFirestoreData = () =>{
     // MatchingRoomテーブルを初期化
 
-    // for(let i=1; i<= 5; i++){
-    //     const roomRef = doc(db, 'MatchingRoom', `Room${i}`);
-    //     setDoc(roomRef, {
-    //         "RoomNumber":i,
-    //         "HeadCount":0,
-    //         "HostUserId":"",
-    //         "SubUser1Id":"",
-    //         "SubUser2Id":""
-    //     });
-    // }
+    for(let i=1; i<= 5; i++){
+        const roomRef = doc(db, 'MatchingRoom', `Room${i}`);
+        setDoc(roomRef, {
+            "RoomNumber":i,
+            "HeadCount":0,
+            "HostUserId":"",
+            "SubUser1Id":"",
+            "SubUser2Id":""
+        });
+    }
 
     // GameRoomテーブルを初期化
     // for(let i=1; i<= 5; i++){
