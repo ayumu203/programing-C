@@ -1,10 +1,9 @@
 import { useContext, useState } from "react"
-import { PageContext, RoomContext, UserContext } from "./App"
+import { RoomContext, UserContext } from "./App"
 import { Box, Typography } from "@mui/material";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
 import { PlayerInfoPanel } from "./GameComponents/PlayerInfoPanel";
-import { CompetitorInfoPanel } from "./GameComponents/CompetitorInfoPanel";
 
 export const Game = () =>{
     const {user} = useContext(UserContext);

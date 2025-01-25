@@ -4,7 +4,6 @@ import { Button, Typography } from "@mui/material";
 import { collection, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
-import { rewriteFirestoreData } from "./ResetDatabase";
 
 
 function Matching(){
