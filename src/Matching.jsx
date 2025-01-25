@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { RoomContext, UserContext } from "./App";
 import { Button, Typography } from "@mui/material";
-import { collection, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
+import { collection, getDocs,doc, updateDoc, setDoc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
 
@@ -25,7 +25,7 @@ function Matching(){
                 });
             }
         }
-        
+
         window.addEventListener('beforeunload',handleRoomDisconnect);
         
         return () => {
@@ -33,7 +33,8 @@ function Matching(){
         };
     },[roomNumber]);
 
-
+    
+    
     const handleRoomMatching = async () => {
         storeUserData();
         const joinableRoom = await searchRoom();
@@ -96,9 +97,16 @@ function Matching(){
                     updateDoc(roomRef, { "HeadCount" : 3 });
                     setRoomNumber(joinableRoom[i][1]);
                     return;
-            }
+                }
         }
     }
+    
+    const roomRef = doc(db,"MatchingRoom",`Room${roomNumber}`);
+    const roomDisconnectObserver = onSnapshot(roomRef,async (document) =>{
+        if(document.data().HeadCount === 0){
+            window.location.reload();
+        }
+    });
     
     // コメントアウトしてあるコードはもう消したHooksを使ってるので参考程度に、三項演算子使うと便利ってな、がはは
     return (
