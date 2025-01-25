@@ -1,7 +1,6 @@
 // getMatchingMazLengthWords()をimportして使ってください。
 //
-// import { getMatchingMaxLengthWords } from './searchWords.js";
-
+import { getMatchingMaxLengthWords } from './searchWords.js";
 
 import { charIndex } from './charIndex.js';
 import { dictionary } from './dictionary.js';

@@ -1,29 +1,28 @@
-import { useContext,  } from "react";
-import { PageContext, UserContext } from "./App";
+import { useContext } from "react";
+import { RoomContext, UserContext } from "./App";
 import { Button, Typography } from "@mui/material";
-import { collection, deleteDoc, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
+import { collection, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
-import { rewriteFirestoreData } from "./ResetDatabase";
+
 
 function Matching(){
-    const {user} = useContext(UserContext);
-    const {page,setPage} = useContext(PageContext);
-
+    const { user } = useContext(UserContext);
+    const { roomNumber,setRoomNumber } = useContext(RoomContext);
+    
     const handleRoomMatching = async () => {
         storeUserData();
         const joinableRoom = await searchRoom();
         joinRoom(joinableRoom);
-        rewriteFirestoreData();
     }
-    
+
     const storeUserData = async () =>{
         await setDoc(doc(db,"User",user.uid),{
             "UserName" : user.displayName,
             "PhotoURL" : user.photoURL 
         })
     }
-
+    
     // 参加可能なルームの番号を返す
     const searchRoom = async () => {
         console.log("空いているルームを検索");
@@ -52,26 +51,31 @@ function Matching(){
         });  
         return joinableRoom;
     }
-
-    const joinRoom = (joinableRoom) =>{
+    
+    
+    const joinRoom = async (joinableRoom) =>{
         for(let i = 0; i < joinableRoom.length; i++){
             const roomRef = doc(db, 'MatchingRoom', `Room${joinableRoom[i][1]}`);
             switch(joinableRoom[i][0]){
                 case "Host":
                     updateDoc(roomRef, { "HostUserId" : user.uid });
+                    updateDoc(roomRef, { "HeadCount" : 1 });
+                    setRoomNumber(joinableRoom[i][1]);
                     return ;
                 case "Sub1":
                     updateDoc(roomRef, { "SubUser1Id" : user.uid });
+                    updateDoc(roomRef, { "HeadCount" : 2 });
+                    setRoomNumber(joinableRoom[i][1]);
                     return ;
                 case "Sub2":
                     updateDoc(roomRef, { "SubUser2Id" : user.uid });
+                    updateDoc(roomRef, { "HeadCount" : 3 });
+                    setRoomNumber(joinableRoom[i][1]);
                     return;
             }
         }
     }
-
-
-    // 実装ヨロヨロ、、、
+    
     // コメントアウトしてあるコードはもう消したHooksを使ってるので参考程度に、三項演算子使うと便利ってな、がはは
     return (
     <>
@@ -121,15 +125,16 @@ function Matching(){
         //             <Button
         //                 variant="contained"
         //                 sx={{
-        //                     color:"white",
-        //                 }}
-        //                 onClick={()=>handleRoomMatching()}
-        //             >
-        //                 マッチング開始
-        //             </Button>
-        //     }
-        // </Box>
-    )
-};
+            //                     color:"white",
+            //                 }}
+            //                 onClick={()=>handleRoomMatching()}
+            //             >
+            //                 マッチング開始
+            //             </Button>
+            //     }
+            // </Box>
+        )
+    };
 
+    
 export default Matching;
