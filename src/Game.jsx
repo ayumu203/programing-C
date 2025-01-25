@@ -74,10 +74,10 @@ export const Game = () =>{
     const [ isHost,setIsHost ] = useState(false);
     const [ turn,setTurn ] = useState(0);
     const [ themeText,setThemeText ] = useState("");
-    const roomRef = doc(db,"MatchingRoom",`Room${roomNumber}`);
     // ルームの人数が規定人数になった時ゲームを開始する
     // ホストの場合
     if(isHost){
+        const roomRef = doc(db,"MatchingRoom",`Room${roomNumber}`);
         const roomHeadCountObserver = onSnapshot(roomRef,async (document) =>{
             if(document.data().HeadCount === MAX_ROOM_HEADCOUNT){
                 // DB上のTurnと上記のHooksのターンを比較し、同値の場合にゲーム開始処理を行う

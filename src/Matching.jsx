@@ -1,7 +1,7 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { RoomContext, UserContext } from "./App";
 import { Button, Typography } from "@mui/material";
-import { collection, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
+import { collection, getDocs,doc, updateDoc, setDoc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
 
@@ -9,6 +9,31 @@ import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
 function Matching(){
     const { user } = useContext(UserContext);
     const { roomNumber,setRoomNumber } = useContext(RoomContext);
+    
+    
+    useEffect(()=>{
+        const handleRoomDisconnect = async () =>{
+            console.log(roomNumber);
+            if(roomNumber){
+                const roomRef = doc(db, 'MatchingRoom', `Room${roomNumber}`);
+                setDoc(roomRef, {
+                    "RoomNumber":roomNumber,
+                    "HeadCount":0,
+                    "HostUserId":"",
+                    "SubUser1Id":"",
+                    "SubUser2Id":""
+                });
+            }
+        }
+
+        window.addEventListener('beforeunload',handleRoomDisconnect);
+        
+        return () => {
+            window.removeEventListener('beforeunload',handleRoomDisconnect);
+        };
+    },[roomNumber]);
+
+    
     
     const handleRoomMatching = async () => {
         storeUserData();
@@ -72,9 +97,16 @@ function Matching(){
                     updateDoc(roomRef, { "HeadCount" : 3 });
                     setRoomNumber(joinableRoom[i][1]);
                     return;
-            }
+                }
         }
     }
+    
+    const roomRef = doc(db,"MatchingRoom",`Room${roomNumber}`);
+    const roomDisconnectObserver = onSnapshot(roomRef,async (document) =>{
+        if(document.data().HeadCount === 0){
+            window.location.reload();
+        }
+    });
     
     // コメントアウトしてあるコードはもう消したHooksを使ってるので参考程度に、三項演算子使うと便利ってな、がはは
     return (
