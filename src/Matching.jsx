@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { RoomContext, UserContext } from "./App";
 import { Button, Typography } from "@mui/material";
 import { collection, getDocs,doc, updateDoc, setDoc } from "firebase/firestore";
@@ -10,6 +10,30 @@ function Matching(){
     const { user } = useContext(UserContext);
     const { roomNumber,setRoomNumber } = useContext(RoomContext);
     
+    
+    useEffect(()=>{
+        const handleRoomDisconnect = async () =>{
+            console.log(roomNumber);
+            if(roomNumber){
+                const roomRef = doc(db, 'MatchingRoom', `Room${roomNumber}`);
+                setDoc(roomRef, {
+                    "RoomNumber":roomNumber,
+                    "HeadCount":0,
+                    "HostUserId":"",
+                    "SubUser1Id":"",
+                    "SubUser2Id":""
+                });
+            }
+        }
+        
+        window.addEventListener('beforeunload',handleRoomDisconnect);
+        
+        return () => {
+            window.removeEventListener('beforeunload',handleRoomDisconnect);
+        };
+    },[roomNumber]);
+
+
     const handleRoomMatching = async () => {
         storeUserData();
         const joinableRoom = await searchRoom();
