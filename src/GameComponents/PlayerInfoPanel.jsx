@@ -15,7 +15,7 @@ export const PlayerInfoPanel = () => {
             </> 
             : 
             <Box>
-                <Typography>まずは右上のボタンよりログインしてください</Typography>
+                <Typography>ゆーざじょうほう</Typography>
             </Box>}
     </Box>
     )

@@ -19,7 +19,7 @@ export const rewriteFirestoreData = () =>{
     // for(let i=1; i<= 5; i++){
     //     const roomRef = doc(db, 'GameRoom', `Room${i}`);
     //     setDoc(roomRef, {
-    //         "Turn" : 1,
+    //         "Turn" : 0,
     //         "ThemeString":[],
     //         "HostUserScore":[],
     //         "SubUser1Score":[],
