@@ -1,6 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { RoomContext, UserContext } from "./App";
-import { Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { collection, getDocs,doc, updateDoc, setDoc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
@@ -9,7 +9,7 @@ import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
 function Matching(){
     const { user } = useContext(UserContext);
     const { roomNumber,setRoomNumber } = useContext(RoomContext);
-    
+    const [ nowMathing, setNowMatching ] = useState(false);
     
     useEffect(()=>{
         const handleRoomDisconnect = async () =>{
@@ -39,6 +39,7 @@ function Matching(){
         storeUserData();
         const joinableRoom = await searchRoom();
         joinRoom(joinableRoom);
+        setNowMatching(true);
     }
 
     const storeUserData = async () =>{
@@ -110,9 +111,34 @@ function Matching(){
     
     // コメントアウトしてあるコードはもう消したHooksを使ってるので参考程度に、三項演算子使うと便利ってな、がはは
     return (
-    <>
-        {user ? <Typography><Button onClick={handleRoomMatching}>マッチング開始</Button></Typography> : <Typography>まずは右上のボタンよりログインしてください</Typography>}
-    </>
+    <Box
+        sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100px', // 画面全体を高さで埋める
+            width: '100%', // 画面全体を横幅で埋める                   
+        }}>
+        {user ? 
+            <Typography>
+                {!nowMathing ? (
+                    <Button onClick={handleRoomMatching}>
+                        <Typography variant="h5">
+                            マッチング開始
+                        </Typography>
+                    </Button>
+                ) : (
+                    <Typography variant="h5">
+                        マッチング中
+                    </Typography>                    
+                )}
+            </Typography> 
+        : 
+            <Typography variant="h5">
+                まずは右上のボタンよりログインしてください
+            </Typography>
+        }
+    </Box>
         // <Box 
         //     mt={"50px"}
         //     sx={{
