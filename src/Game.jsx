@@ -1,9 +1,9 @@
 import { useContext, useState } from "react"
 import { RoomContext, UserContext } from "./App"
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Paper, Grid, useRadioGroup} from "@mui/material";
 import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import { PlayerInfoPanel } from "./GameComponents/PlayerInfoPanel";
+import PlayerInfoPanel from "./GameComponents/PlayerInfoPanel";
 import makeRandomRegText from "./Gametools/makeText";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
 
@@ -12,7 +12,10 @@ export const Game = () =>{
     const { roomNumber } = useContext(RoomContext);
     const [ opponent1,setOpponent1 ] = useState(null);
     const [ opponent2,setOpponent2 ] = useState(null);
-    
+
+    const hiragana = ['あ', 'い', 'う', 'え', 'お', 'か'];
+    const number = [1, 2, 3, 4, 5, 6];
+
     // 各プレイヤーの情報を管理する部分
     const userRef = doc(db,"MatchingRoom",`Room${roomNumber}`);
     const userDataObserver = onSnapshot(userRef,async (document) =>{
@@ -97,21 +100,45 @@ export const Game = () =>{
     
 
     return(
-        <Box>
-            <Box sx={{
-                display:"flex"
-            }}>
-                {/* UIに使う気力なかった */}
-                <PlayerInfoPanel></PlayerInfoPanel>
-                <Typography>{!opponent1 ? <>マッチング中</> : <>{opponent1.UserName}</>}</Typography>
-                {!opponent1 ? <>no img</>: <img src={`${opponent1.PhotoURL}`}></img>}        
-                <Typography>{!opponent2 ? <>マッチング中</> : <>{opponent2.UserName}</>}</Typography>
-                {!opponent2 ? <>no img</>: <img src={`${opponent2.PhotoURL}`}></img>}        
-            </Box>
-            <Box>
-                {/* ちょっとコンポーネント化に手間がかかるのでベタ書きする */}
-                {themeText}
-            </Box>
-        </Box>
+        <Grid container spacing={2} sx={{height:'50vh', overflow:'hidden'}}>
+            <Grid item xs={4}>
+                <Paper sx={{ padding: 2, height: '100%', display: 'flex', justifyContent: 'center', borderRadius: '10px', border: '2px solid black',minHeight: '100%',boxSizing: 'border-box'}}>
+                    {user ? 
+                        <PlayerInfoPanel photo={user.photoURL} playername={user.displayName} hiragana={hiragana} number={number}>
+                        </PlayerInfoPanel>
+                    :
+                    <></>
+                    }
+                </Paper>
+            </Grid>
+            <Grid item xs={4}>
+                <Paper sx={{ padding: 2, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: '2px solid black',minHeight: '100%',boxSizing: 'border-box'}}>
+                    <Typography variant="h6">中央のセクション</Typography>
+                </Paper>
+            </Grid>
+            <Grid item xs={4}>
+                <Paper sx={{ padding: 2, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: '2px solid black',minHeight: '100%',boxSizing: 'border-box'}}>
+ 
+                    <Typography variant="h6">右側のセクション</Typography>
+                </Paper>
+            </Grid>
+        </Grid>
     )
 }
+/*
+<Box>
+<Box sx={{
+    display:"flex"
+}}>
+    {/* UIに使う気力なかった }
+
+    <Typography>{!opponent1 ? <>マッチング中</> : <>{opponent1.UserName}</>}</Typography>
+    {!opponent1 ? <>no img</>: <img src={`${opponent1.PhotoURL}`}></img>}        
+    <Typography>{!opponent2 ? <>マッチング中</> : <>{opponent2.UserName}</>}</Typography>
+    {!opponent2 ? <>no img</>: <img src={`${opponent2.PhotoURL}`}></img>}        
+</Box>
+<Box>
+    {/* ちょっとコンポーネント化に手間がかかるのでベタ書きする }
+    {themeText}
+</Box>
+</Box>*/
