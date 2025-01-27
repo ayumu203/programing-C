@@ -102,7 +102,7 @@ export const Game = () =>{
                     const tmp_text = await makeRandomRegText();
                     await updateDoc(gameRoomRef,{ThemeString:tmp_text});
                     await setThemeText(tmp_text);
-                    // return ;
+                    return ;
                 }
             }
         });
@@ -112,7 +112,7 @@ export const Game = () =>{
     const groomThemeTextObserver = onSnapshot(groomRef,async (document) =>{
         if(document.exists()){
             setThemeText(document.data().ThemeString);
-            // return ;
+            return ;
         }
     });
 
@@ -142,7 +142,7 @@ export const Game = () =>{
                 setOpponent2Score(document.data().SubUser2Score);
             }
             if(subUserNumber === 1){
-                setOpponent1AnswerString(document.data().HostUserString);
+                setOpponent1AnswerString(document.data().HostUserString);   
                 setOpponent2AnswerString(document.data().SubUser2AnswerString);
                 setOpponent1Score(document.data().HostUserScore);
                 setOpponent2Score(document.data().SubUser2Score);
@@ -159,10 +159,10 @@ export const Game = () =>{
 
     return(
         <Grid container spacing={2} sx={{height:'50vh', overflow:'hidden'}}>
+            <Button onClick={handleSendGameData}>回答</Button>
             {themeText}
             {opponent1AnswerString}
             {opponent1Score}
-            <Button onClick={handleSendGameData}>回答</Button>
             <Grid item xs={4}>
                 <Paper sx={{ padding: 2, height: '100%', display: 'flex', justifyContent: 'center', borderRadius: '10px', border: '2px solid black',minHeight: '100%',boxSizing: 'border-box'}}>
                     {user ? 
