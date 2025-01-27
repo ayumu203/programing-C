@@ -10,7 +10,7 @@ export const PageContext = createContext(null);
 export const RoomContext = createContext(null);
 
 function App() {
-  // rewriteFirestoreData();        
+  rewriteFirestoreData();          
   const [user,setUser] = useState(null);
   const [page,setPage] = useState(null);
   const [roomNumber,setRoomNumber] = useState(null);

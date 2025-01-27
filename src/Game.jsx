@@ -12,6 +12,8 @@ export const Game = () =>{
     const { roomNumber } = useContext(RoomContext);
     const [ opponent1,setOpponent1 ] = useState(null);
     const [ opponent2,setOpponent2 ] = useState(null);
+    const [ isHost,setIsHost ] = useState(false);
+    const [ subUserNumber,setSubUserNumber ] = useState(0);
 
     const hiragana = ['あ', 'い', 'う', 'え', 'お', 'か'];
     const number = [1, 2, 3, 4, 5, 6];
@@ -49,6 +51,7 @@ export const Game = () =>{
                 }
             }
             if(user.uid !== document.data().SubUser1Id){
+                setSubUserNumber(2);
                 const oppRef = doc(db,"User",`${document.data().SubUser1Id}`);
                 const opp = await getDoc(oppRef);
                 if(opp.exists()){
@@ -62,6 +65,7 @@ export const Game = () =>{
                 }
             }
             if(user.uid !== document.data().SubUser2Id){
+                setSubUserNumber(1);
                 const oppRef = doc(db,"User",`${document.data().SubUser2Id}`);
                 const opp = await getDoc(oppRef);
                 if(opp.exists()){
@@ -74,9 +78,15 @@ export const Game = () =>{
     })  
 
     // ゲームの処理を行う部分
-    const [ isHost,setIsHost ] = useState(false);
     const [ turn,setTurn ] = useState(0);
     const [ themeText,setThemeText ] = useState("");
+    const [answerString,setAnswerString] = useState("ぬわああああ");    
+    const [score,setScore] = useState(1000);
+    const [opponent1AnswerString,setOpponent1AnswerString] = useState("");
+    const [opponent2AnswerString,setOpponent2AnswerString] = useState("");
+    const [opponent1Score,setOpponent1Score] = useState(0);
+    const [opponent2Score,setOpponent2Score] = useState(0);
+    
     // ルームの人数が規定人数になった時ゲームを開始する
     // ホストの場合
     if(isHost){
@@ -89,18 +99,70 @@ export const Game = () =>{
                 if((turn === 0) && (gameRoom.Turn ===0)){
                     await updateDoc(gameRoomRef,{Turn:1});
                     // 文章の生成および送信そして、表示かなあ
-                    const themeText = makeRandomRegText();
+                    const tmp_text = await makeRandomRegText();
+                    await updateDoc(gameRoomRef,{ThemeString:tmp_text});
+                    await setThemeText(tmp_text);
+                    // return ;
                 }
             }
         });
     }
+    // すべてのユーザ
+    const groomRef = doc(db,"GameRoom",`Room${roomNumber}`);
+    const groomThemeTextObserver = onSnapshot(groomRef,async (document) =>{
+        if(document.exists()){
+            setThemeText(document.data().ThemeString);
+            // return ;
+        }
+    });
 
+    const handleSendGameData = async () =>{
+        // ボタンを消す処理書いてほしい
+        const gameRoomRef = doc(db,"GameRoom",`Room${roomNumber}`);
+        if(isHost){ 
+            await updateDoc(gameRoomRef,{HostUserAnswerString:answerString});
+            await updateDoc(gameRoomRef,{HostUserScore:score});
+        }
+        if(subUserNumber === 1){ 
+            await updateDoc(gameRoomRef,{SubUser1AnswerString:answerString});
+            await updateDoc(gameRoomRef,{SubUser1Score:score});
+        }
+        if(subUserNumber === 2){ 
+            await updateDoc(gameRoomRef,{SubUser2AnswerString:answerString});
+            await updateDoc(gameRoomRef,{SubUser2Score:score});
+        }
+    }    
 
-    // サブの場合
-    
+    const resultObserver = onSnapshot(groomRef,async (document) =>{
+        if(document.exists()){
+            if(isHost){
+                setOpponent1AnswerString(document.data().SubUser1AnswerString);
+                setOpponent2AnswerString(document.data().SubUser2AnswerString);
+                setOpponent1Score(document.data().SubUser1Score);
+                setOpponent2Score(document.data().SubUser2Score);
+            }
+            if(subUserNumber === 1){
+                setOpponent1AnswerString(document.data().HostUserString);
+                setOpponent2AnswerString(document.data().SubUser2AnswerString);
+                setOpponent1Score(document.data().HostUserScore);
+                setOpponent2Score(document.data().SubUser2Score);
+            }
+            if(subUserNumber === 2){
+                setOpponent1AnswerString(document.data().HostUserString);
+                setOpponent2AnswerString(document.data().SubUser1AnswerString);
+                setOpponent1Score(document.data().HostUserScore);
+                setOpponent2Score(document.data().SubUser1Score);
+            }
+        }
+    });
+
 
     return(
         <Grid container spacing={2} sx={{height:'50vh', overflow:'hidden'}}>
+            {themeText}
+            {opponent1AnswerString}
+            {opponent1Score}
+            <Button onClick={handleSendGameData}>回答</Button>
             <Grid item xs={4}>
                 <Paper sx={{ padding: 2, height: '100%', display: 'flex', justifyContent: 'center', borderRadius: '10px', border: '2px solid black',minHeight: '100%',boxSizing: 'border-box'}}>
                     {user ? 
@@ -108,7 +170,7 @@ export const Game = () =>{
                         </PlayerInfoPanel>
                     :
                     <></>
-                    }
+                }
                 </Paper>
             </Grid>
             <Grid item xs={4}>
