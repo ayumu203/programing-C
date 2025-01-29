@@ -16,17 +16,17 @@ export const rewriteFirestoreData = () =>{
     }
 
     // GameRoomテーブルを初期化
-    // for(let i=1; i<= 5; i++){
-    //     const roomRef = doc(db, 'GameRoom', `Room${i}`);
-    //     setDoc(roomRef, {
-    //         "Turn" : 0,
-    //         "ThemeString":[],
-    //         "HostUserScore":[],
-    //         "SubUser1Score":[],
-    //         "SubUser2Score":[],
-    //         "HostUserAnswerString":[],
-    //         "SubUser1AnswerString":[],
-    //         "SubUser2AnswerString":[]
-    //     });
-    // }
+    for(let i=1; i<= 5; i++){
+        const roomRef = doc(db, 'GameRoom', `Room${i}`);
+        setDoc(roomRef, {
+            "Turn" : 0,
+            "ThemeString":[],
+            "HostUserScore":[],
+            "SubUser1Score":[],
+            "SubUser2Score":[],
+            "HostUserAnswerString":[],
+            "SubUser1AnswerString":[],
+            "SubUser2AnswerString":[]
+        });
+    }
 }
