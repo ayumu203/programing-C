@@ -14,7 +14,7 @@ export const Game = () =>{
     const [ opponent2,setOpponent2 ] = useState(null);
 
     const hiragana = ['あ', 'い', 'う', 'え', 'お', 'か'];
-    const number = [1, 2, 3, 4, 5, 6];
+    const number = ['1', '2', '3', '4', '5', '6'];
 
     // 各プレイヤーの情報を管理する部分
     const userRef = doc(db,"MatchingRoom",`Room${roomNumber}`);
@@ -100,7 +100,7 @@ export const Game = () =>{
     
 
     return(
-        <Grid container spacing={2} sx={{height:'50vh', overflow:'hidden'}}>
+        <Grid container spacing={2} sx={{height:'100vh', overflow:'hidden'}}>
             <Grid item xs={4}>
                 <Paper sx={{ padding: 2, height: '100%', display: 'flex', justifyContent: 'center', borderRadius: '10px', border: '2px solid black',minHeight: '100%',boxSizing: 'border-box'}}>
                     {user ? 

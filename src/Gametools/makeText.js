@@ -1,10 +1,19 @@
 function makeRandomRegText(){
-    const characters = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん".split("");
-    const char1 = characters[Math.floor(Math.random() * characters.length)];
-    const char2 = characters[Math.floor(Math.random() * characters.length)];
-    const char3 = characters[Math.floor(Math.random() * characters.length)];
-    const text = `^${char1}${char2}${char3}***&|$`
-    return text;
+    let reg = null;
+    const rand = Math.floor(Math.random() * 3);
+    switch(rand){
+        case 0:
+            reg = '/^a.*{n}a$/';
+            break;
+        case 1:
+            reg = '/^a.*{1}a.*{}a$/';
+            break;
+        case 2:
+            reg ='/^a.*{n}a.*{1}a$/';
+            break;
+        default:
+    }
+    return reg;
 }
 
 export default makeRandomRegText;
