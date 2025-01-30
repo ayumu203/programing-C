@@ -6,6 +6,7 @@ import { db } from "./firebase";
 import PlayerInfoPanel from "./GameComponents/PlayerInfoPanel";
 import makeRandomRegText from "./Gametools/makeText";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
+import { getMatchingMaxLengthWord } from "./searchWords.js";
 
 export const Game = () =>{
     const { user } = useContext(UserContext);
@@ -116,8 +117,9 @@ export const Game = () =>{
         }
     });
 
-    const handleSendGameData = async () =>{
-        // ボタンを消す処理書いてほしい
+    const handleSendGameData = async(answerPattern) =>{
+        const answerString = (getMatchingMaxLengthWord(answerPattern) ?? "");
+        const score = answerString.length;
         const gameRoomRef = doc(db,"GameRoom",`Room${roomNumber}`);
         if(isHost){ 
             await updateDoc(gameRoomRef,{HostUserAnswerString:answerString});
@@ -162,7 +164,7 @@ export const Game = () =>{
             <Grid item xs={4}>
                 <Box sx={{ height: '100%', width: '100%', border: '2px solid black', borderRadius: '10px', boxSizing: 'border-box', padding: 2 }}>
                     {user ? 
-                        <PlayerInfoPanel photo={user.photoURL} playername={user.displayName} pattern={themeText} hiragana={hiragana} number={number}>
+                        <PlayerInfoPanel photo={user.photoURL} playername={user.displayName} pattern={themeText} hiragana={hiragana} number={number} sendGameData={handleSendGameData}>
                         </PlayerInfoPanel>
                     :
                         <></>
