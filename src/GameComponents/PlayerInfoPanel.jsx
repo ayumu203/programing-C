@@ -6,35 +6,41 @@ export default function PlayerInfoPanel({ photo, playername, point=0, pattern=""
     const [ nowSelecting, setNowSelecting ] = useState(100);
     const [ cur_pattern, setPattern ] = useState(pattern)
     const [ isTruePattern, setIsTruePatten ] = useState(false);
+    const [ isLocked, setIsLocked ] = useState(false);
 
     useEffect (() => {
         setPattern(pattern);
     },[pattern]);
 
     const handleSelectClick = (index) => {
-        setNowSelecting(index);
+        if(!isLocked){
+            setNowSelecting(index);
+        }
     }
 
     const handleDicideClick = (index) => {
-        if(nowSelecting != 100){
-            const strArray = Array.from(cur_pattern);
-            if(nowSelecting < 6 && pattern[index] == 'a'){
-                strArray[index] = hiragana[nowSelecting];
-            } else if(nowSelecting >= 6 && pattern[index] == 'n'){
-                strArray[index] = number[nowSelecting-6];
+        if(!isLocked){
+            if(nowSelecting != 100){
+                const strArray = Array.from(cur_pattern);
+                if(nowSelecting < 6 && pattern[index] == 'a'){
+                    strArray[index] = hiragana[nowSelecting];
+                } else if(nowSelecting >= 6 && pattern[index] == 'n'){
+                    strArray[index] = number[nowSelecting-6];
+                }
+                setPattern(strArray.join(''));
+                if(strArray.includes('a') != true && strArray.includes('n') != true){
+                    setIsTruePatten(true);
+                }
+                console.log(cur_pattern);
+                setNowSelecting(100);
             }
-            setPattern(strArray.join(''));
-            if(strArray.includes('a') != true && strArray.includes('n') != true){
-                setIsTruePatten(true);
-            }
-            console.log(cur_pattern);
-            setNowSelecting(100);
         }
     }
 
     const handleSubmitClick = () => {
         sendGameData(cur_pattern);
         setIsTruePatten(false);
+        setIsLocked(true);
     }
 
     return (
