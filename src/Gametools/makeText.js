@@ -6,7 +6,7 @@ function makeRandomRegText(){
             reg = "/^a.*{n}a$/";
             break;
         case 1:
-            reg = "/^a.*{1}a.*{}a$/";
+            reg = "/^a.*{1}a.*{n}a$/";
             break;
         case 2:
             reg ="/^a.*{n}a.*{1}a$/";
