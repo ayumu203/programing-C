@@ -3,13 +3,13 @@ function makeRandomRegText(){
     const rand = Math.floor(Math.random() * 3);
     switch(rand){
         case 0:
-            reg = '/^a.*{n}a$/';
+            reg = "/^a.*{n}a$/";
             break;
         case 1:
-            reg = '/^a.*{1}a.*{}a$/';
+            reg = "/^a.*{1}a.*{}a$/";
             break;
         case 2:
-            reg ='/^a.*{n}a.*{1}a$/';
+            reg ="/^a.*{n}a.*{1}a$/";
             break;
         default:
     }

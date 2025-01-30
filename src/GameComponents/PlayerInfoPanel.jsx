@@ -2,7 +2,7 @@ import { Box, Typography, Grid, Paper, Button} from "@mui/material"
 import { useState } from "react"
 
 
-export default function PlayerInfoPanel({ photo, playername, point=0, pattern="/^a.*{n}a$/", hiragana, number}){
+export default function PlayerInfoPanel({ photo, playername, point=0, pattern, hiragana, number}){
     const [ nowSelecting, setNowSelecting ] = useState(100);
     const [ cur_pattern, setPattern ] = useState(pattern)
     const [ isTruePattern, setIsTruePatten ] = useState(false);
