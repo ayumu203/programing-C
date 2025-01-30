@@ -92,7 +92,7 @@ export default function PlayerInfoPanel({ photo, playername, point=0, pattern=""
                         hiragana.map((moji, index) => {
                             const isSelect = index === nowSelecting;
                             return(
-                                <Grid item xs={4} style={{ height: 'minmax(100px, 200px)'}} sx={{height:'80px'}}>
+                                <Grid item xs={4} key={index} style={{ height: 'minmax(100px, 200px)'}} sx={{height:'80px'}}>
                                     <Button
                                         key={index} 
                                         onClick={() => handleSelectClick(index)}
@@ -112,7 +112,7 @@ export default function PlayerInfoPanel({ photo, playername, point=0, pattern=""
                         number.map((num, index) => {
                             const isSelect = (index+6) === nowSelecting;
                             return(
-                                <Grid item xs={4} style={{ height: 'minmax(100px, 200px)'}} sx={{height:'80px'}}>
+                                <Grid item xs={4} key={index} style={{ height: 'minmax(100px, 200px)'}} sx={{height:'80px'}}>
                                     <Button
                                         key={index+6}  
                                         onClick={() => handleSelectClick(index+6)}
