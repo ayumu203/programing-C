@@ -1,11 +1,15 @@
 import { Box, Typography, Grid, Paper, Button} from "@mui/material"
-import { useState } from "react"
+import { useState, useEffect} from "react"
 
 
-export default function PlayerInfoPanel({ photo, playername, point=0, pattern="", hiragana=[], number=[]}){
+export default function PlayerInfoPanel({ photo, playername, point=0, pattern="", hiragana=[], number=[], sendGameData}){
     const [ nowSelecting, setNowSelecting ] = useState(100);
     const [ cur_pattern, setPattern ] = useState(pattern)
     const [ isTruePattern, setIsTruePatten ] = useState(false);
+
+    useEffect (() => {
+        setPattern(pattern);
+    },[pattern]);
 
     const handleSelectClick = (index) => {
         setNowSelecting(index);
@@ -23,13 +27,14 @@ export default function PlayerInfoPanel({ photo, playername, point=0, pattern=""
             if(strArray.includes('a') != true && strArray.includes('n') != true){
                 setIsTruePatten(true);
             }
-            console.log(isTruePattern);
+            console.log(cur_pattern);
             setNowSelecting(100);
         }
     }
 
     const handleSubmitClick = () => {
-        
+        sendGameData(cur_pattern);
+        setIsTruePatten(false);
     }
 
     return (
@@ -69,13 +74,13 @@ export default function PlayerInfoPanel({ photo, playername, point=0, pattern=""
                     if(char === 'a'){
                         return(
                             <Button key={index} onClick={() => handleDicideClick(index)} style={{ height: '40px', width:'40px', backgroundColor: '#ffffff' }}>
-                                {cur_pattern[index] !== 'a' ? cur_pattern[index] : '' }
+                                <Typography variant='h4'>{cur_pattern[index] !== 'a' ? cur_pattern[index] : '' }</Typography>
                             </Button>
                         );
                     } else if(char === 'n'){
                         return(
                             <Button key={index} onClick={() => handleDicideClick(index)} style={{ height: '40px', width:'5px', backgroundColor: '#ffffff' }}>
-                                {cur_pattern[index] !== 'n' ? cur_pattern[index] : '' }
+                                <Typography variant='h4'>{cur_pattern[index] !== 'n' ? cur_pattern[index] : '' }</Typography>
                             </Button>
                         )
                     } else {
@@ -112,7 +117,7 @@ export default function PlayerInfoPanel({ photo, playername, point=0, pattern=""
                         number.map((num, index) => {
                             const isSelect = (index+6) === nowSelecting;
                             return(
-                                <Grid item xs={4} key={index} style={{ height: 'minmax(100px, 200px)'}} sx={{height:'80px'}}>
+                                <Grid item xs={4} key={index+6} style={{ height: 'minmax(100px, 200px)'}} sx={{height:'80px'}}>
                                     <Button
                                         key={index+6}  
                                         onClick={() => handleSelectClick(index+6)}
