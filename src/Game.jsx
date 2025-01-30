@@ -159,11 +159,6 @@ export const Game = () =>{
 
     return(
         <Grid container spacing={2} sx={{height:'100vh', overflow:'hidden'}}>
-        <Grid container spacing={2} sx={{height:'50vh', overflow:'hidden'}}>
-            <Button onClick={handleSendGameData}>回答</Button>
-            {themeText}
-            {opponent1AnswerString}
-            {opponent1Score}
             <Grid item xs={4}>
                 <Paper sx={{ padding: 2, height: '100%', display: 'flex', justifyContent: 'center', borderRadius: '10px', border: '2px solid black',minHeight: '100%',boxSizing: 'border-box'}}>
                     {user ? 
@@ -188,6 +183,13 @@ export const Game = () =>{
         </Grid>
     )
 }
+/*
+<Grid container spacing={2} sx={{height:'50vh', overflow:'hidden'}}>
+<Button onClick={handleSendGameData}>回答</Button>
+{themeText}
+{opponent1AnswerString}
+{opponent1Score}
+*/
 /*
 <Box>
 <Box sx={{
