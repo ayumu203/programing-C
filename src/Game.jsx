@@ -158,27 +158,38 @@ export const Game = () =>{
 
 
     return(
-        <Grid container spacing={2} sx={{height:'100vh', overflow:'hidden'}}>
+        <Grid container spacing={2} sx={{height:'77vh', overflow:'hidden'}}>
             <Grid item xs={4}>
-                <Paper sx={{ padding: 2, height: '100%', display: 'flex', justifyContent: 'center', borderRadius: '10px', border: '2px solid black',minHeight: '100%',boxSizing: 'border-box'}}>
+                <Box sx={{ height: '100%', width: '100%', border: '2px solid black', borderRadius: '10px', boxSizing: 'border-box', padding: 2 }}>
                     {user ? 
                         <PlayerInfoPanel photo={user.photoURL} playername={user.displayName} hiragana={hiragana} number={number}>
                         </PlayerInfoPanel>
                     :
-                    <></>
-                }
-                </Paper>
+                        <></>
+                    }
+                </Box>
             </Grid>
             <Grid item xs={4}>
-                <Paper sx={{ padding: 2, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: '2px solid black',minHeight: '100%',boxSizing: 'border-box'}}>
-                    <Typography variant="h6">中央のセクション</Typography>
-                </Paper>
+                <Box sx={{ height: '100%', width: '100%', border: '2px solid black', borderRadius: '10px', boxSizing: 'border-box', padding: 2 }}>
+
+                    {opponent1 ? 
+                        <PlayerInfoPanel photo={opponent1.PhotoURL} playername={opponent1.UserName}>
+                        </PlayerInfoPanel>                        
+                    :
+                        <></>
+                    }
+                </Box>
             </Grid>
             <Grid item xs={4}>
-                <Paper sx={{ padding: 2, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: '2px solid black',minHeight: '100%',boxSizing: 'border-box'}}>
- 
-                    <Typography variant="h6">右側のセクション</Typography>
-                </Paper>
+                <Box sx={{ height: '100%', width: '100%', border: '2px solid black', borderRadius: '10px', boxSizing: 'border-box', padding: 2 }}>
+
+                    {opponent2 ? 
+                        <PlayerInfoPanel photo={opponent2.PhotoURL} playername={opponent2.UserName}>
+                        </PlayerInfoPanel>                        
+                    :
+                        <></>
+                    }
+                </Box>
             </Grid>
         </Grid>
     )
