@@ -4,7 +4,7 @@ import { Box, Button, Typography, Paper, Grid, useRadioGroup} from "@mui/materia
 import { doc, getDoc, onSnapshot, snapshotEqual, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import PlayerInfoPanel from "./GameComponents/PlayerInfoPanel";
-import makeRandomRegText from "./Gametools/makeText";
+import {makeRandomRegText, makeHiraganaList, makeNumberList }from "./Gametools/makeText";
 import { MAX_ROOM_HEADCOUNT } from "./ConstValue";
 import { getMatchingMaxLengthWord } from "./searchWords.js";
 
@@ -23,12 +23,12 @@ export const Game = () =>{
     // ゲームの処理を行う部分
     const [ turn,setTurn ] = useState(0);
     const [ themeText,setThemeText ] = useState("");
-    const [answerString,setAnswerString] = useState("ぬわああああ");    
-    const [score,setScore] = useState(1000);
+    const [answerString,setAnswerString] = useState("");    
+    const [score,setScore] = useState(false);
     const [opponent1AnswerString,setOpponent1AnswerString] = useState("");
     const [opponent2AnswerString,setOpponent2AnswerString] = useState("");
-    const [opponent1Score,setOpponent1Score] = useState(0);
-    const [opponent2Score,setOpponent2Score] = useState(0);
+    const [opponent1Score,setOpponent1Score] = useState(false);
+    const [opponent2Score,setOpponent2Score] = useState(false);
     
     // ルームの人数が規定人数になった時ゲームを開始する
     useEffect(() => {
