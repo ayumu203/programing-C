@@ -102,13 +102,6 @@ function Matching(){
         }
     }
     
-    const roomRef = doc(db,"MatchingRoom",`Room${roomNumber}`);
-    const roomDisconnectObserver = onSnapshot(roomRef,async (document) =>{
-        if(document.data().HeadCount === 0){
-            window.location.reload();
-        }
-    });
-    
     // コメントアウトしてあるコードはもう消したHooksを使ってるので参考程度に、三項演算子使うと便利ってな、がはは
     return (
     <Box
@@ -116,7 +109,7 @@ function Matching(){
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100px', // 画面全体を高さで埋める
+            height: '10vh', // 画面全体を高さで埋める
             width: '100%', // 画面全体を横幅で埋める                   
         }}>
         {user ? 
