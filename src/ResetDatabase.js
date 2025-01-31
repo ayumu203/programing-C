@@ -21,9 +21,11 @@ export const rewriteFirestoreData = () =>{
         setDoc(roomRef, {
             "Turn" : 0,
             "ThemeString":[],
-            "HostUserScore":[],
-            "SubUser1Score":[],
-            "SubUser2Score":[],
+            "ThemaHiraganaList":[],
+            "ThemaNumberList":[],
+            "HostUserScore":false,
+            "SubUser1Score":false,
+            "SubUser2Score":false,
             "HostUserAnswerString":[],
             "SubUser1AnswerString":[],
             "SubUser2AnswerString":[]
