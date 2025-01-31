@@ -2,15 +2,22 @@ import { Box, Typography, Grid, Paper, Button} from "@mui/material"
 import { useState, useEffect} from "react"
 
 
-export default function PlayerInfoPanel({ photo, playername, point=0, pattern="", hiragana=[], number=[], sendGameData}){
+export default function PlayerInfoPanel({ state, win="", photo, playername, point=0, pattern="", hiragana=[], number=[], sendGameData}){
     const [ nowSelecting, setNowSelecting ] = useState(100);
-    const [ cur_pattern, setPattern ] = useState(pattern)
+    const [ pre_pattern, setPrePattern ] = useState(pattern);
+    const [ cur_pattern, setCurPattern ] = useState(pattern);
     const [ isTruePattern, setIsTruePatten ] = useState(false);
     const [ isLocked, setIsLocked ] = useState(false);
+    const [ score, setScore ] = useState(point);
 
     useEffect (() => {
-        setPattern(pattern);
+        setPrePattern(pattern);
+        setCurPattern(pattern);
     },[pattern]);
+    
+    useEffect(() => {
+        setScore(point);
+    },[point])
 
     const handleSelectClick = (index) => {
         if(!isLocked){
@@ -22,12 +29,12 @@ export default function PlayerInfoPanel({ photo, playername, point=0, pattern=""
         if(!isLocked){
             if(nowSelecting != 100){
                 const strArray = Array.from(cur_pattern);
-                if(nowSelecting < 6 && pattern[index] == 'a'){
+                if(nowSelecting < 6 && pre_pattern[index] == 'a'){
                     strArray[index] = hiragana[nowSelecting];
-                } else if(nowSelecting >= 6 && pattern[index] == 'n'){
+                } else if(nowSelecting >= 6 && pre_pattern[index] == 'n'){
                     strArray[index] = number[nowSelecting-6];
                 }
-                setPattern(strArray.join(''));
+                setCurPattern(strArray.join(''));
                 if(strArray.includes('a') != true && strArray.includes('n') != true){
                     setIsTruePatten(true);
                 }
@@ -38,9 +45,13 @@ export default function PlayerInfoPanel({ photo, playername, point=0, pattern=""
     }
 
     const handleSubmitClick = () => {
-        sendGameData(cur_pattern);
-        setIsTruePatten(false);
-        setIsLocked(true);
+        if(state == 0){
+            sendGameData(cur_pattern);
+            setIsTruePatten(false);
+            setIsLocked(true);
+        }else if(state == 1){
+            ;
+        }
     }
 
     return (
@@ -57,26 +68,39 @@ export default function PlayerInfoPanel({ photo, playername, point=0, pattern=""
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item xs={3} style={{height:'30%'}}></Grid>
+            <Grid item xs={3} style={{height:'30%'}}>
+                {win == "Win!!" ?
+                    <Typography variant='h4' sx={{width:'auto', justifyContent: 'center', color:"red"}}>{win}</Typography>
+                :
+                    <Typography variant='h4' sx={{width:'auto', justifyContent: 'center', color:"blue"}}>{win}</Typography>
+                }
+            </Grid>
             <Grid item xs={4} style={{height:'50%'}}>
                 <Grid container direction="column" alignItems="center" spacing={3}>
                     <Grid item>
-                        <Typography variant='h4' sx={{width:'auto', justifyContent: 'center'}}>{point}pt</Typography>
+                        <Typography variant='h4' sx={{width:'auto', justifyContent: 'center'}}>{score}pt</Typography>
                     </Grid>
                     <Grid item>
-                        {isTruePattern == true ?
-                            <Button fullWidth onClick={() => handleSubmitClick()} sx={{backgroundColor:'red', color:'black'}}>
-                                <Typography variant='h4'>確定</Typography>
-                            </Button>
-                        :
-                            <></>
-                        }
+                        {(() => {
+                            if(isTruePattern == true && state == 0){
+                               return(<Button fullWidth onClick={() => handleSubmitClick()} sx={{backgroundColor:'red', color:'black'}}>
+
+                                        <Typography variant='h4'>確定</Typography>            
+                                </Button>);
+                            }
+                            if(state == 1){
+                                return(<Button fullWidth onClick={() => handleSubmitClick()} sx={{backgroundColor:'red', color:'black'}}>
+
+                                        <Typography variant='h5'>結果表示中</Typography>            
+                                </Button>);                                
+                            }
+                        })()}
                     </Grid>
                 </Grid>
             </Grid>
             <Grid item xs={12} style={{height:'15%', backgroundColor:'black'}}>
                 <Typography variant='h4' style={{ backgroundColor: '#4CAF50' }} sx={{width:'auto', height:'80px', justifyContent: 'center', textAlign:'center', alignItems:'center',display: 'flex', }}>
-                {Array.from(pattern).map((char, index) => {
+                {Array.from(pre_pattern).map((char, index) => {
                     if(char === 'a'){
                         return(
                             <Button key={index} onClick={() => handleDicideClick(index)} style={{ height: '40px', width:'40px', backgroundColor: '#ffffff' }}>
