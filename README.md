@@ -19,11 +19,10 @@
     VITE_FIREBASE_MESSAGING_SENDER_ID = "*"
     VITE_FIREBASE_APP_ID = "*"
 ```
-### データベースの初期設定
-* ResetDatabaseをがんばって動かしてください.
-
-## 起動
+## データベースの初期化・起動
 * 以下のコマンドでローカルホスト上にアプリが起動します.
 ```
     npm run dev
 ```
+* その後src/App.jsx内のresetFirebase()のコメントアウトを外し,ページを読み込んでください.
+* 上の行程を実行したら,resetFirebase()は再びコメントアウトしてください.
