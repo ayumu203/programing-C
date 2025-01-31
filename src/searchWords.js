@@ -1,13 +1,17 @@
-// getMatchingMazLengthWords()をimportして使ってください。
+// getMatchingMazLengthWord()をimportして使ってください。
 //
-import { getMatchingMaxLengthWords } from './searchWords.js";
+//import { getMatchingMaxLengthWord } from "./searchWords.js";
 
 import { charIndex } from './charIndex.js';
 import { dictionary } from './dictionary.js';
 
-
+export function getMatchingMaxLengthWord(pattern){
+    const list = getMatchingMaxLengthWords(pattern);
+    const rand = Math.floor(Math.random() * list.length);
+    return list[rand];
+}
 // 正規表現にマッチする単語のリストを返す関数
-export function getMatchingMaxLengthWords(pattern) {
+    function getMatchingMaxLengthWords(pattern) {
     const hiraganaPattern = /^[ぁ-んー]$/;
     let searchIndex = [0, 0, 0];
     for(let i = 0; i < pattern.length; i++){
@@ -17,12 +21,13 @@ export function getMatchingMaxLengthWords(pattern) {
             searchIndex[index] = searchIndex[index] | (1<<bit);
         }
     }
-
+    
+    const regex = new RegExp(pattern);
     const matches = [];
     let maxMatchLength = 0;
     for (const [key, index] of Object.entries(dictionary)) {
         if(testSerachIndex(index, searchIndex)){
-            if (pattern.test(key)) {
+            if (regex.test(key)) {
                 if(maxMatchLength < key.length){
                     maxMatchLength = key.length;
                 }
