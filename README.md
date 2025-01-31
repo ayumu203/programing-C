@@ -1,7 +1,7 @@
 # RegeLook
 
 # 超重要:
-* <span style="color:red"><aa/span>現在下記の問題により適切な処理をしないとゲームは動きません.
+* <span style="color:red">aa</span>現在下記の問題により適切な処理をしないとゲームは動きません.
 * github pages上でも同様です.
 
 ## 実行方法
