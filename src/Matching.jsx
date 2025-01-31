@@ -10,6 +10,7 @@ function Matching(){
     const { user } = useContext(UserContext);
     const { roomNumber,setRoomNumber } = useContext(RoomContext);
     const [ nowMathing, setNowMatching ] = useState(false);
+    const [ isStarting, setIsStarting ] = useState(0);
     
     useEffect(()=>{
         const handleRoomDisconnect = async () =>{
@@ -33,7 +34,25 @@ function Matching(){
         };
     },[roomNumber]);
 
-    
+    // すべてのユーザ
+    useEffect(() => {
+        const groomThemeTextObserver = onSnapshot(doc(db,"GameRoom",`Room${roomNumber}`), (document) =>{
+            if(document.exists() && document.data().Turn == 1){
+                setIsStarting(1);
+                groomThemeTextObserver();
+            }
+        });
+        return () => groomThemeTextObserver();
+    }, [roomNumber]);
+
+    useEffect(() => {
+        if(isStarting==1){
+            const timer = setTimeout(() => {
+                setIsStarting(2);
+            }, 3000);
+            return () =>clearTimeout(timer);
+        }
+    }, [isStarting]);
     
     const handleRoomMatching = async () => {
         storeUserData();
@@ -114,17 +133,33 @@ function Matching(){
         }}>
         {user ? 
             <Typography>
-                {!nowMathing ? (
-                    <Button onClick={handleRoomMatching}>
-                        <Typography variant="h5">
-                            マッチング開始
-                        </Typography>
-                    </Button>
-                ) : (
-                    <Typography variant="h5">
-                        マッチング中
-                    </Typography>                    
-                )}
+                {(() => {
+                    if(!nowMathing) {
+                        return(
+                            <Button onClick={handleRoomMatching}>
+                                <Typography variant="h5">
+                                    マッチング開始
+                                </Typography>
+                            </Button>
+                        );
+                    }else{
+                        if(isStarting==0){
+                            return(
+                                <Typography variant="h5">
+                                    マッチング中
+                                </Typography>                  
+                            );
+                        }else if(isStarting==1){
+                            return(
+                                <Typography variant="h5">
+                                    ゲームスタート
+                                </Typography>                  
+                            );                            
+                        }else{
+                            ;
+                        }
+                    }
+                })()}
             </Typography> 
         : 
             <Typography variant="h5">
