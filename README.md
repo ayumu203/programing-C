@@ -31,8 +31,11 @@
 ```
     npm run dev
 ```
-* その後src/App.jsx内のresetFirebase()のコメントアウトを外し,ページを読み込んでください.
-* 上の行程を実行したら,resetFirebase()は再びコメントアウトしてください.
+* その後src/App.jsx内のrewriteFirestoreData()のコメントアウトを外し,ページを読み込んでください.
+* 上の行程を実行したら,rewriteFirestoreData()は再びコメントアウトしてください.
 
-## 問題
-* ページをリロード・閉じた際にGameRoomのデータを初期化する処理が適切に動かず,ゲームプレイの際はresetFirebaseを動かさなければならない.
+## 問題点
+* ページをリロード・閉じた際にGameRoomのデータを初期化する処理が適切に動かない.
+
+## 対応策
+* ゲームプレイの際はrewriteFirestoreData()のコメントアウトを外しページ上で動作させてあと,rewriteFirestoreData()
